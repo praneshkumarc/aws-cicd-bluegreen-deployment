@@ -1,30 +1,30 @@
 {
-  "family": "portfolio-task-fargate",
+  "family": "portfolio-task",
+  "executionRoleArn": "arn:aws:iam::368677659300:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "256",
-  "memory": "512",
-  "executionRoleArn": "arn:aws:iam::368677659300:role/ECSTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::368677659300:role/ECSTaskRole",
   "containerDefinitions": [
     {
       "name": "portfolio-container",
-      "image": "<IMAGE_URI>", 
+      "image": "368677659300.dkr.ecr.us-east-1.amazonaws.com/portfolio-app:latest",
       "essential": true,
       "portMappings": [
         {
           "containerPort": 8000,
+          "hostPort": 8000,
           "protocol": "tcp"
         }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-region": "us-east-1",
           "awslogs-group": "/ecs/portfolio",
+          "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
       }
     }
-  ]
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512"
 }
