@@ -1,5 +1,5 @@
 {
-  "family": "portfolio-task",
+  "family": "portfolio-task-fargate",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
@@ -9,9 +9,14 @@
   "containerDefinitions": [
     {
       "name": "portfolio-container",
-      "image": "<IMAGE_URI>",
+      "image": "<IMAGE_URI>", 
       "essential": true,
-      "portMappings": [{ "containerPort": 8000, "protocol": "tcp" }],
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -23,4 +28,3 @@
     }
   ]
 }
-
