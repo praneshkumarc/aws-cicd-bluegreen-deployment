@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ data.name }} - {{ data.title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Nav -->
+  <nav class="bg-white shadow sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex justify-between items-center h-16">
+        <a href="#" class="text-lg font-semibold">{{ data.name }}</a>
+        <div class="space-x-4 hidden md:flex">
+          <a href="#projects" class="hover:text-blue-600">Projects</a>
+          <a href="#contact" class="hover:text-blue-600">Contact</a>
+        </div>
+        <button class="md:hidden p-2 rounded hover:bg-gray-100" id="menuBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="md:hidden px-4 pb-4 hidden" id="menu">
+      <a href="#projects" class="block py-2 hover:text-blue-600">Projects</a>
+      <a href="#contact" class="block py-2 hover:text-blue-600">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="bg-white">
+    <div class="max-w-6xl mx-auto px-6 py-16 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold">{{ data.title }}</h1>
+      <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">{{ data.summary }}</p>
+      <div class="mt-6 flex flex-wrap gap-3 justify-center">
+        <a href="mailto:{{ data.contact.email }}" class="px-4 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-700">Email</a>
+        <a href="{{ data.contact.linkedin }}" class="px-4 py-2 rounded-full bg-gray-900 text-white hover:bg-black" target="_blank">LinkedIn</a>
+        <a href="{{ data.contact.github }}" class="px-4 py-2 rounded-full bg-gray-200 hover:bg-gray-300">GitHub</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Education & Skills -->
+  <section class="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Education</h2>
+      <p class="font-medium">{{ data.education.degree }}</p>
+      <p>{{ data.education.university }}</p>
+      <p class="text-sm text-gray-600">{{ data.education.years }} • CGPA {{ data.education.cgpa }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Skills</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {% for group, items in data.skills.items() %}
+        <div>
+          <p class="font-medium">{{ group }}</p>
+          <ul class="list-disc ml-5 text-sm text-gray-700">
+            {% for i in items %}<li>{{ i }}</li>{% endfor %}
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications -->
+  <section class="max-w-6xl mx-auto px-6 pb-4">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">Certifications</h2>
+      <ul class="grid sm:grid-cols-2 gap-2">
+        {% for c in data.certifications %}
+          <li class="text-sm">✅ <span class="font-medium">{{ c.name }}</span> — {{ c.issuer }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="max-w-6xl mx-auto px-6 py-12">
+    <h2 class="text-2xl font-semibold mb-6 text-center">Projects</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for p in data.projects %}
+      <div class="bg-white rounded-xl shadow p-6 hover:shadow-md transition">
+        <p class="text-xs uppercase tracking-wide text-gray-500">{{ p.category }}</p>
+        <h3 class="text-lg font-semibold mt-1">{{ p.title }}</h3>
+        <p class="text-sm mt-2 text-gray-700">{{ p.description }}</p>
+        {% if p.elaboration %}
+          <ul class="list-disc ml-5 text-sm mt-2 text-gray-700">
+            {% for e in p.elaboration %}<li>{{ e|safe }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+        {% if p.tags %}
+          <div class="mt-3 flex flex-wrap gap-2">
+            {% for t in p.tags %}<span class="text-xs bg-gray-100 px-2 py-1 rounded">{{ t }}</span>{% endfor %}
+          </div>
+        {% endif %}
+        {% if p.link %}<a href="{{ p.link }}" class="text-blue-600 text-sm mt-3 inline-block">View</a>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="bg-gray-100 py-12">
+    <div class="max-w-2xl mx-auto px-6 bg-white rounded-xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4 text-center">Contact</h2>
+      <ul class="text-sm text-gray-700 space-y-1">
+        <li>Email: <a class="text-blue-600" href="mailto:{{ data.contact.email }}">{{ data.contact.email }}</a></li>
+        <li>Phone: {{ data.contact.phone }}</li>
+        <li>LinkedIn: <a class="text-blue-600" target="_blank" href="{{ data.contact.linkedin }}">{{ data.contact.linkedin }}</a></li>
+        <li>GitHub: <a class="text-blue-600" target="_blank" href="{{ data.contact.github }}">{{ data.contact.github }}</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <script>
+    const btn = document.getElementById('menuBtn');
+    const menu = document.getElementById('menu');
+    btn.addEventListener('click', ()=> menu.classList.toggle('hidden'));
+  </script>
+</body>
+</html>

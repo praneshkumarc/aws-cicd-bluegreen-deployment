@@ -1,0 +1,25 @@
+{
+  "family": "portfolio-task",
+  "networkMode": "bridge",
+  "requiresCompatibilities": ["EC2"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::368677659300:role/ECSTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::368677659300:role/ECSTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "portfolio-container",
+      "image": "<IMAGE_URI>",
+      "essential": true,
+      "portMappings": [{ "containerPort": 8000, "protocol": "tcp" }],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-region": "us-east-1",
+          "awslogs-group": "/ecs/portfolio",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

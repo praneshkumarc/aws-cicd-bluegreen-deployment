@@ -1,0 +1,41 @@
+version: 0.2
+
+env:
+  variables:
+    IMAGE_REPO_NAME: "portfolio-app"
+    AWS_ACCOUNT_ID: "368677659300"
+    AWS_REGION: "us-east-1"
+
+phases:
+  pre_build:
+    commands:
+      - echo "===== Pre-Build Phase ====="
+      - echo "AWS CLI version:"
+      - aws --version
+      - ACCOUNT_ID=${AWS_ACCOUNT_ID}
+      - REGION=${AWS_REGION}
+      - REPO_URI=$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - echo "ECR repository URI: $REPO_URI"
+      - aws ecr describe-repositories --region $REGION --repository-names $IMAGE_REPO_NAME >/dev/null 2>&1 || aws ecr create-repository --region $REGION --repository-name $IMAGE_REPO_NAME
+      - aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPO_URI
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+      - echo "===== Build Phase ====="
+      - docker build -t $REPO_URI:latest .
+      - docker tag $REPO_URI:latest $REPO_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo "===== Post-Build Phase ====="
+      - docker push $REPO_URI:latest
+      - docker push $REPO_URI:$IMAGE_TAG
+      - IMAGE_URI=$REPO_URI:$IMAGE_TAG
+      - echo "IMAGE_URI=$IMAGE_URI"
+      - echo "Stamping task definition template..."
+      - sed "s|<IMAGE_URI>|$IMAGE_URI|g" ci/taskdef.json > taskdef.json
+      - cat taskdef.json
+artifacts:
+  files:
+    - taskdef.json
+    - ci/appspec.yaml
