@@ -9,5 +9,6 @@ Resources:
           ContainerPort: 8000
 Hooks:
   AfterAllowTestTraffic:
-    - location: lambda/validation_lambda.sh
+    - location: CI_CD_ECS/validation_lambda.sh
       timeout: 300
+
