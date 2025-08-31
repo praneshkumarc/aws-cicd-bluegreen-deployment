@@ -3,12 +3,10 @@ Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: "REPLACE_WITH_TASK_DEF_ARN"
+        TaskDefinition: "arn:aws:ecs:us-east-1:368677659300:task-definition/portfolio-task-def:4"
         LoadBalancerInfo:
           ContainerName: "portfolio-container"
           ContainerPort: 8000
-Hooks:
-  AfterAllowTestTraffic:
-    - location: CI_CD_ECS/validation_lambda.sh
-      timeout: 300
+
+
 
